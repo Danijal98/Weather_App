@@ -7,6 +7,7 @@ import rs.raf.jul.danijal_azerovic_rn8618.data.models.Resource
 import rs.raf.jul.danijal_azerovic_rn8618.data.models.Weather
 import rs.raf.jul.danijal_azerovic_rn8618.data.models.WeatherEntity
 import rs.raf.jul.danijal_azerovic_rn8618.data.models.WeatherResponse
+import rs.raf.jul.danijal_azerovic_rn8618.utilities.WeatherFilter
 import timber.log.Timber
 
 class WeatherRepositoryImpl (
@@ -19,9 +20,7 @@ class WeatherRepositoryImpl (
             .getAll(city,days)
             .doOnNext {
                 Timber.e("Fetching data...")
-                Timber.e("$it\n")
                 val entities: List<WeatherEntity> = convertResponseToEntity(it)
-                Timber.e("$entities\n Entity size: ${entities.size}")
                 localDataSource.deleteAndInsertAll(entities)
             }
             .map {
@@ -35,6 +34,7 @@ class WeatherRepositoryImpl (
             .map {
                 it.map {
                     Weather(
+                        id = it.id.toString(),
                         cityName = it.cityName,
                         lat = it.lat,
                         lon = it.lon,

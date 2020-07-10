@@ -1,6 +1,11 @@
 package rs.raf.jul.danijal_azerovic_rn8618.data.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Weather(
+    val id: String,
     val cityName: String,
     val lat: String,
     val lon: String,
@@ -10,6 +15,6 @@ data class Weather(
     val mintemp_c: String,
     val maxwind_kmh: String,
     val uv: String
-)
+) : Parcelable
 
 //TODO add current temp

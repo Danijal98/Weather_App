@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Weather App</string>
+    <string name="show">Show</string>
+    <string name="city">City</string>
+    <string name="days">Days</string>
+    <string name="nothing_to_show">Nothing to show</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="max_daily_temperature">Max Daily Temperature</string>
+    <string name="min_daily_temperature">Min Daily Temperature</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="ultraviolet_index">Ultraviolet Index</string>
 </resources>
