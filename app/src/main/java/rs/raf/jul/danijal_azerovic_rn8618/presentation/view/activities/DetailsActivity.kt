@@ -30,9 +30,9 @@ class DetailsActivity : AppCompatActivity(R.layout.activity_details), OnMapReady
 
     private fun initBottomView() {
         cityAndDate.text = weather.cityName + ", " + weather.date
-        maxTemp.text = maxTemp.text.toString() + ": " + weather.maxtemp_c
-        minTemp.text = minTemp.text.toString() + ": " + weather.mintemp_c
-        windSpeed.text = windSpeed.text.toString() + ": " + weather.maxwind_kmh
+        maxTemp.text = maxTemp.text.toString() + ": " + weather.maxtemp_c + "C"
+        minTemp.text = minTemp.text.toString() + ": " + weather.mintemp_c + "C"
+        windSpeed.text = windSpeed.text.toString() + ": " + weather.maxwind_kmh + "kmh"
         uv.text = uv.text.toString() + ": " + weather.uv
     }
 

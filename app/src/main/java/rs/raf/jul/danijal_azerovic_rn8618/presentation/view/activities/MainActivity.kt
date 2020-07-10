@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.e("onCreate")
         init()
     }
 
@@ -78,7 +79,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         when (state) {
             is WeatherState.Success -> {
                 if(state.weather.isEmpty()){
-                    Timber.e("Prazan niz")
                     recyclerView.visibility = View.GONE
                     emptyListText.visibility = View.VISIBLE
                     return
@@ -108,7 +108,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         Timber.e("onRestoreInstanceState")
-        //TODO
+        //TODO onCreate se poziva kada se klikne dugme back
     }
+
 
 }

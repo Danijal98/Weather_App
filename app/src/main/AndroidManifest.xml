@@ -41,6 +41,7 @@
             android:name=".presentation.view.activities.DetailsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"
+            android:parentActivityName=".presentation.view.activities.MainActivity"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
