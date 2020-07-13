@@ -9,12 +9,19 @@ class WeatherDiffItemCallback : DiffUtil.ItemCallback<Weather>() {
         return oldItem.id == newItem.id
     }
 
-    //TODO promeniti za maxtemp
     override fun areContentsTheSame(oldItem: Weather, newItem: Weather): Boolean {
         return oldItem.cityName == newItem.cityName
-                && oldItem.maxtemp_c == newItem.maxtemp_c
+                && checkTemp(oldItem, newItem)
                 && oldItem.icon == newItem.icon
                 && oldItem.date == newItem.date
+    }
+
+    private fun checkTemp(oldItem: Weather, newItem: Weather): Boolean {
+        return if (oldItem.curr_temp != "0"){
+            oldItem.curr_temp == newItem.curr_temp
+        }else{
+            oldItem.avgtemp_c == newItem.avgtemp_c
+        }
     }
 
 }

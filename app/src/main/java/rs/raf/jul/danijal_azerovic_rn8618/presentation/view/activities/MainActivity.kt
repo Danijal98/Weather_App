@@ -1,15 +1,25 @@
 package rs.raf.jul.danijal_azerovic_rn8618.presentation.view.activities
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import androidx.core.content.getSystemService
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.squareup.moshi.Moshi
+import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONArray
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rs.raf.jul.danijal_azerovic_rn8618.R
+import rs.raf.jul.danijal_azerovic_rn8618.data.models.Weather
 import rs.raf.jul.danijal_azerovic_rn8618.presentation.contract.WeatherContract
 import rs.raf.jul.danijal_azerovic_rn8618.presentation.view.recycler.adapter.WeatherAdapter
 import rs.raf.jul.danijal_azerovic_rn8618.presentation.view.recycler.diff.WeatherDiffItemCallback
@@ -17,19 +27,28 @@ import rs.raf.jul.danijal_azerovic_rn8618.presentation.view.states.WeatherState
 import rs.raf.jul.danijal_azerovic_rn8618.presentation.viewmodel.WeatherViewModel
 import rs.raf.jul.danijal_azerovic_rn8618.utilities.WeatherFilter
 import timber.log.Timber
+import java.util.ArrayList
+
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val weatherViewModel: WeatherContract.ViewModel by viewModel<WeatherViewModel>()
     private lateinit var weatherAdapter: WeatherAdapter
+    private lateinit var list: List<Weather>
 
     companion object {
         const val MESSAGE_KEY_WEATHER = "weather"
+        const val MESSAGE_KEY_LIST = "list"
+        var CONNECTED: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.e("onCreate")
+
+        // This is not working atm because all time_epoch's are hardcoded in the api and older then today
+        //weatherViewModel.deleteOlderThanToday()
+
         init()
     }
 
@@ -47,6 +66,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun initListeners() {
         btn_show.setOnClickListener {
+            checkNetworkConnection()
             if (cityText.text.isBlank() || daysText.text.isBlank()) {
                 Toast.makeText(this, "City or days field is empty!", Toast.LENGTH_SHORT).show()
                 cityText.requestFocus()
@@ -78,15 +98,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun renderState(state: WeatherState){
         when (state) {
             is WeatherState.Success -> {
+
+                progress_circular.visibility = View.GONE
+
                 if(state.weather.isEmpty()){
                     recyclerView.visibility = View.GONE
                     emptyListText.visibility = View.VISIBLE
                     return
                 }
+
                 recyclerView.visibility = View.VISIBLE
                 emptyListText.visibility = View.GONE
-                Timber.e("${state.weather}")
-                weatherAdapter.submitList(state.weather)
+
+                list = state.weather
+                weatherAdapter.submitList(list)
             }
             is WeatherState.Error -> {
                 //Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
@@ -96,20 +121,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
             is WeatherState.Loading -> {
                 //Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show()
+                recyclerView.visibility = View.GONE
+                emptyListText.visibility = View.GONE
+                progress_circular.visibility = View.VISIBLE
             }
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Timber.e("onSaveInstanceState")
-    }
+    private fun checkNetworkConnection(){
+        val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        Timber.e("onRestoreInstanceState")
-        //TODO onCreate se poziva kada se klikne dugme back
+        CONNECTED = isConnected
     }
-
 
 }

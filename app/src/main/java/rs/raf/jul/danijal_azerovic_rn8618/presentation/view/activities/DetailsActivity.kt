@@ -1,7 +1,9 @@
 package rs.raf.jul.danijal_azerovic_rn8618.presentation.view.activities
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,12 +30,13 @@ class DetailsActivity : AppCompatActivity(R.layout.activity_details), OnMapReady
         initBottomView()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initBottomView() {
         cityAndDate.text = weather.cityName + ", " + weather.date
-        maxTemp.text = maxTemp.text.toString() + ": " + weather.maxtemp_c + "C"
-        minTemp.text = minTemp.text.toString() + ": " + weather.mintemp_c + "C"
-        windSpeed.text = windSpeed.text.toString() + ": " + weather.maxwind_kmh + "kmh"
-        uv.text = uv.text.toString() + ": " + weather.uv
+        maxTemp.text = maxTemp.text.toString() + ": " + weather.maxtemp_c.toDouble().round(1).toString() + "C"
+        minTemp.text = minTemp.text.toString() + ": " + weather.mintemp_c.toDouble().round(1).toString() + "C"
+        windSpeed.text = windSpeed.text.toString() + ": " + weather.maxwind_kmh.toDouble().round(1).toString() + "kmh"
+        uv.text = uv.text.toString() + ": " + weather.uv.toDouble().round(1).toString()
     }
 
     /**
@@ -53,4 +56,17 @@ class DetailsActivity : AppCompatActivity(R.layout.activity_details), OnMapReady
         mMap.addMarker(MarkerOptions().position(location).title("Marker in ${weather.cityName}"))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10f))
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item != null) {
+            if (item.itemId == android.R.id.home){
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()
+
 }

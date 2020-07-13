@@ -1,5 +1,6 @@
 package rs.raf.jul.danijal_azerovic_rn8618.data.repositories
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import rs.raf.jul.danijal_azerovic_rn8618.data.datasources.local.WeatherDao
 import rs.raf.jul.danijal_azerovic_rn8618.data.datasources.remote.WeatherService
@@ -13,7 +14,7 @@ import timber.log.Timber
 class WeatherRepositoryImpl (
     private val localDataSource: WeatherDao,
     private val remoteDataSource: WeatherService
-): WeatherRepository{
+): WeatherRepository {
 
     override fun fetchByNameAndDays(city: String, days: String): Observable<Resource<Unit>> {
         return remoteDataSource
@@ -40,8 +41,10 @@ class WeatherRepositoryImpl (
                         lon = it.lon,
                         date = it.date,
                         icon = it.icon,
+                        curr_temp = it.curr_temp,
                         maxtemp_c = it.maxtemp_c,
                         mintemp_c = it.mintemp_c,
+                        avgtemp_c = it.avgtemp_c,
                         maxwind_kmh = it.maxwind_kmh,
                         uv = it.uv
                     )
@@ -49,22 +52,35 @@ class WeatherRepositoryImpl (
             }
     }
 
+    override fun deleteOlderThanToday(): Completable {
+        return Completable.fromCallable {
+            localDataSource.deleteOlderThanToday()
+        }
+    }
+
     private fun convertResponseToEntity(response: WeatherResponse): List<WeatherEntity>{
         val entities: MutableList<WeatherEntity> = mutableListOf()
         val location = response.location
         val forecast = response.forecast
+        val current = response.current
         val forecastDay = forecast.forecastDay
-        for (fd in forecastDay){
+        for ( (index, fd) in forecastDay.withIndex()){
             val day = fd.day
             val condition = day.condition
-            entities.add(WeatherEntity(0,
+            val icon = if (index == 0) current.condition.icon else condition.icon
+            val currTemp = if (index == 0) current.temp_c else "0"
+            entities.add(WeatherEntity(
+                0,
                 location.name,
                 location.lat,
                 location.lon,
                 fd.date,
-                condition.icon,
+                fd.date_epoch,
+                icon,
+                currTemp,
                 day.maxtemp_c,
                 day.mintemp_c,
+                day.avgtemp_c,
                 day.maxwind_kph,
                 day.uv))
         }

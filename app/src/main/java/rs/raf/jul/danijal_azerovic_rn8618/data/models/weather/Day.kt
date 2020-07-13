@@ -6,6 +6,7 @@ import com.squareup.moshi.JsonClass
 data class Day(
     val maxtemp_c: String,
     val mintemp_c: String,
+    val avgtemp_c: String,
     val maxwind_kph: String,
     val condition: Condition,
     val uv: String

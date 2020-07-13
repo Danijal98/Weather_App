@@ -11,9 +11,12 @@ data class WeatherEntity(
     val lat: String,
     val lon: String,
     val date: String,
+    val date_epoch: String,
     val icon: String,
+    val curr_temp: String = "",
     val maxtemp_c: String,
     val mintemp_c: String,
+    val avgtemp_c: String,
     val maxwind_kmh: String,
     val uv: String
 )

@@ -23,7 +23,7 @@ abstract class WeatherDao {
         insertAll(entities).blockingAwait()
     }
 
-    //TODO
-    //abstract fun deleteOlderThanToday(): Completable
+    @Query("DELETE FROM weather WHERE date_epoch < CURRENT_TIMESTAMP")
+    abstract fun deleteOlderThanToday()
 
 }

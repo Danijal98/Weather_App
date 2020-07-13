@@ -7,7 +7,6 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.weather_item.*
 import rs.raf.jul.danijal_azerovic_rn8618.R
 import rs.raf.jul.danijal_azerovic_rn8618.data.models.Weather
-import timber.log.Timber
 
 class WeatherViewHolder(
     override val containerView: View,
@@ -18,16 +17,22 @@ class WeatherViewHolder(
     }
 
     fun bind(weather: Weather){
-        //TODO kada je adapterPosition 0 staviti current temp, inace average
+        val temp = if(adapterPosition==0){
+            weather.curr_temp.toDouble().round(1).toString()
+        }else{
+            weather.avgtemp_c.toDouble().round(1).toString()
+        }
         Picasso
             .get()
             .load("https:${weather.icon}")
-            .placeholder(R.drawable.ic_launcher_background)
             .resize(150,150)
+            .error(R.drawable.error_weather_icon)
             .into(weatherImg)
-        weatherTemp.text = weather.maxtemp_c + "C"
+        weatherTemp.text = temp + "C"
         weatherCity.text = weather.cityName
         weatherDate.text = weather.date
     }
+
+    private fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()
 
 }

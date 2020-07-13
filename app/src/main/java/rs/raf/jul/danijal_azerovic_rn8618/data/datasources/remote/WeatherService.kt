@@ -8,7 +8,7 @@ import rs.raf.jul.danijal_azerovic_rn8618.data.models.WeatherResponse
 
 interface WeatherService {
 
-    @GET("forecast.json?key=$API_KEY")
+    @GET("forecast.json?")
     fun getAll(@Query("q")city: String, @Query("days")days: String): Observable<WeatherResponse>
 
 }

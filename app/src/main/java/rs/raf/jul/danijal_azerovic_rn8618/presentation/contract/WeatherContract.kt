@@ -12,6 +12,7 @@ interface WeatherContract {
 
         fun fetchWeather(city: String, days: String)
         fun getWeather(filter: WeatherFilter)
+        fun deleteOlderThanToday()
 
     }
 
